@@ -1,0 +1,4 @@
+.idea/*
+*.pyc
+prepare_data/*.tfrecords
+cifar-10/checkpoints/*
