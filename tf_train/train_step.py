@@ -106,7 +106,7 @@ def train_step( images_one, images_two, labels, network,
 
     with tf.device( cpu_device ):
 
-        labels_one_hot = labels #tf.one_hot( labels,depth =2 )
+        labels_one_hot = tf.one_hot( labels,depth =2 )
         loss = contrastive_loss( out_one, out_two, labels_one_hot, margin )
 
         ##calculate gradient and apply it

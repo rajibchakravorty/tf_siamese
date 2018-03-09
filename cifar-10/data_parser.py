@@ -24,7 +24,7 @@ class Parser():
 
         image_one = tf.image.convert_image_dtype( image_one, tf.float32 )
 
-        image_string_ = tf.read_file(image_file_two)
+        image_string = tf.read_file(image_file_two)
         image_two = tf.image.decode_jpeg(image_string, channels=3)
 
         image_two = tf.image.convert_image_dtype(image_two, tf.float32)
