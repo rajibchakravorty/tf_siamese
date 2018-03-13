@@ -1,7 +1,7 @@
 
 
 from tf_train.trainer import Trainer
-from cnn_1 import cnn_archi
+from cnn_2 import cnn_archi
 
 
 import config

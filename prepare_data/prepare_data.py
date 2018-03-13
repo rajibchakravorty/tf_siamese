@@ -3,7 +3,8 @@ from os.path import join
 import cPickle
 import random
 
-from prep_tf_records import prep_tfrecord
+
+random.seed( 2034 )
 
 def unpickle(file):
     with open(file, 'rb') as fo:
@@ -71,40 +72,31 @@ if __name__ == '__main__':
 
     valid_list = train_list[-10000:]
     train_list = train_list[0:-10000]
-    same_valid = valid_list[0:5000]
+    same_valid = valid_list[0:1000]
     class_valid = valid_list[5000:]
+
+
 
     image_location = '/opt/ml_data/cifar/cifar-10/images/test'
     batch_file = join(data_location, 'test_batch')
     test_list = get_batch_data_lists(batch_file, 'test', image_location)
 
-    class_num = 10
+    ## saving the lists
 
-    print 'Training/Valid 1/Valid 2/Test Samples {0}/{1}/{2}/{3}'.format( len( train_list ),\
-                                                                 len( same_valid ),\
-                                                                 len( class_valid ),\
-                                                                 len( test_list ) )
+    train_list_file = join( 'output','train.pickle')
+    siamese_valid_file = join( 'output','siamese_valid.pickle' )
+    class_valid_file = join( 'output','class_valid.pickle' )
+    test_file        = join( 'output','test.pickle' )
 
-    print test_list[0][0]
-    count_class(same_valid)
-    count_class(class_valid)
-    count_class(test_list)
+    with open( train_list_file, 'wb' ) as f:
+        cPickle.dump(train_list, f )
 
-    ##saving tf_records
+    with open( siamese_valid_file, 'wb' ) as f:
+        cPickle.dump(same_valid, f )
 
-    same_valid_file = 'same_valid.tfrecords'
-    class_valid_file = 'class_valid.tfrecords'
-    test_valid_file = 'test.tfrecords'
+    with open(class_valid_file, 'wb') as f:
+        cPickle.dump(class_valid, f)
 
-    prep_tfrecord( same_valid, same_valid_file )
-    prep_tfrecord( class_valid, class_valid_file )
-    prep_tfrecord( test_list, test_valid_file )
+    with open(test_file, 'wb') as f:
+        cPickle.dump(test_list, f)
 
-
-    for sample_per_class in [20,50,100,150,200,250,300,350,500]:
-        total_samples = sample_per_class * class_num
-
-        train_list_sampled = train_list[0:total_samples]
-        count_class(train_list_sampled)
-        train_file = 'train_{0}.tfrecords'.format(sample_per_class)
-        prep_tfrecord(train_list_sampled, train_file)

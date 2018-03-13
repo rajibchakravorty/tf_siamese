@@ -84,7 +84,7 @@ class Trainer():
             label_placeholder = tf.placeholder(tf.int64,
                                                shape=(None, ))
 
-            out_one, out_two, loss, learning_rate, \
+            output_one, output_two, loss, learning_rate, \
             global_steps, train_op = \
                 train_step(images_one = image_placeholder_one,
                            images_two=image_placeholder_two,
@@ -92,6 +92,9 @@ class Trainer():
                            network = self.network,
                            learning_rate_info=self.config.learning_rate_info,
                            device_string=self.config.device_string,
+                           loss_op = self.config.loss_op,
+                           one_hot = self.config.one_hot,
+                           loss_op_kwargs = self.config.loss_op_kwargs,
                            margin = self.contrastive_margin ,
                            optimizer=self.config.optimizer,
                            optimizer_kwargs=self.config.optimizer_kwargs)
@@ -144,36 +147,45 @@ class Trainer():
                 print 'Entering training loop...'
                 for _ in range( self.config.batch_per_epoch ):
 
-                    images_one, images_two, labels = sess.run( next_element ,feed_dict={handle:train_handle})
-                    print np.average( images_one), np.average( images_two )
-                    print labels
-                    _,loss_output = sess.run( [train_op,loss],
+                    images_one, images_two, labels, files_one, files_two = \
+                        sess.run( next_element ,feed_dict={handle:train_handle})
+                    _,out_1,out_2,loss_output = sess.run( [train_op,output_one, output_two,loss],
                                                      feed_dict={image_placeholder_one:images_one,
                                                                 image_placeholder_two: images_two,
                                                                 label_placeholder:labels} )
 
-                    print 'Loss: {0}'.format( loss_output)
+                    if np.isnan( loss_output ):
+                        print files_one, files_two
+                        print 'Loss: {0}'.format(loss_output)
+                        exit
+
                 ##stop the training and collect some statistics
                 current_step, l_rate = sess.run( [global_steps ,learning_rate] )
                 print 'Step no {0}'.format( current_step )
                 print 'Learning rate {0}'.format( l_rate )
+
                 ### collecting training stats
                 print 'Start collecting training statistics...'
                 t_loss = 0.
                 for _ in range(self.config.batch_per_test):
-                    images_one, images_two, labels = sess.run(next_element, feed_dict={handle: train_handle})
+                    images_one, images_two, labels,files_one,files_two = sess.run(next_element, feed_dict={handle: train_handle})
 
 
-                    loss_output= sess.run([loss], \
+                    loss_output= sess.run(loss, \
                                           feed_dict={image_placeholder_one: images_one,
                                                      image_placeholder_two: images_two,
                                                      label_placeholder: labels})
 
+                    if np.isnan( loss_output ):
+                        print files_one, files_two
+                        print 'Loss: {0}'.format(loss_output)
+                        exit
+
                     t_loss += loss_output
 
-                t_loss       /= np.float32( self.config.batch_per_test )
+                t_loss /= np.float32( self.config.batch_per_test )
 
-                print 'Saving Loss {0}'.format( t_loss )
+                print 'Saving Epoch Train Loss {0}'.format( t_loss )
 
                 train_summary = sess.run( train_summary_op,
                                           feed_dict={ total_loss_summ:t_loss,
@@ -187,16 +199,21 @@ class Trainer():
                 sess.run(valid_data_iterator.initializer)
                 t_loss = 0.
                 for _ in range(self.config.batch_per_test):
-                    images_one, images_two, labels = sess.run(next_element, feed_dict={handle: valid_handle})
+                    images_one, images_two, labels,files_one,files_two = sess.run(next_element, feed_dict={handle: valid_handle})
 
-                    loss_output = sess.run([loss], \
+                    loss_output = sess.run(loss, \
                                            feed_dict={image_placeholder_one: images_one,
                                                       image_placeholder_two: images_two,
                                                       label_placeholder: labels})
+                    if np.isnan( loss_output ):
+                        print files_one, files_two
+                        print 'Loss: {0}'.format(loss_output)
+                        exit
 
                     t_loss += loss_output
 
                 t_loss /= np.float32(self.config.batch_per_test)
+                print 'Saving Epoch Validation Loss {0}'.format( t_loss )
 
 
                 valid_summary = sess.run(valid_summary_op,

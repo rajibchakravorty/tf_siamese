@@ -21,11 +21,14 @@ class Parser():
 
         image_string = tf.read_file(image_file_one)
         image_one = tf.image.decode_jpeg(image_string,channels=3)
+        imf_file1 = image_string
 
         image_one = tf.image.convert_image_dtype( image_one, tf.float32 )
 
         image_string = tf.read_file(image_file_two)
         image_two = tf.image.decode_jpeg(image_string, channels=3)
+
+        imf_file2 = image_string
 
         image_two = tf.image.convert_image_dtype(image_two, tf.float32)
 
@@ -44,4 +47,4 @@ class Parser():
 
         #return (image_file, image, height, width, channel, resize_height, resize_width)
 
-        return image_one, image_two, label
+        return image_one, image_two, label,image_file_one, image_file_two

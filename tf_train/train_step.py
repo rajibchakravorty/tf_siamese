@@ -63,16 +63,24 @@ Provision for supplying loss calculators and optimizers
 #TODO: test supplying other loss_op and optimizers
 
 def contrastive_loss(output_1, output_2, label, margin):
-    d = tf.sqrt(tf.reduce_sum(tf.pow(output_1 - output_2, 2), 1, keep_dims=True))
-    ##original
-    tmp= label * tf.square(d)
-    tmp2 = (1 - label) * tf.square(tf.maximum((margin - d),0))
-    #tmp= (1-label) * tf.square(d)
-    #tmp2 = label * tf.square(tf.maximum((margin - d),0))
-    return tf.reduce_mean(tmp + tmp2) /2
+
+    inverted_label = 1-label
+    d = tf.reduce_sum(tf.square(output_1 - output_2), 1)
+    d_sqrt = tf.sqrt(d)
+
+    label_casted = tf.cast( inverted_label, tf.float32 )
+    loss = label_casted * tf.square(tf.maximum(0., margin - d_sqrt)) + \
+                    (1 - label_casted) * d
+
+    loss = 0.5 * tf.reduce_mean(loss)
+
+    return loss
 
 def train_step( images_one, images_two, labels, network,
                 learning_rate_info, device_string,
+                loss_op,
+                one_hot,
+                loss_op_kwargs,
                 margin,
                 optimizer,
                 optimizer_kwargs,
@@ -99,15 +107,27 @@ def train_step( images_one, images_two, labels, network,
     else:
         updater = optimizer( learning_rate=learning_rate, **optimizer_kwargs )
 
-    with tf.device( device_string ):
+    with tf.device( cpu_device ):
         ## get logits
         out_one = network( images_one, reuse = False )
         out_two = network( images_two, reuse = True )
+        #output = network( images_one, images_two )
 
     with tf.device( cpu_device ):
 
-        labels_one_hot = tf.one_hot( labels,depth =2 )
-        loss = contrastive_loss( out_one, out_two, labels_one_hot, margin )
+        '''
+        if one_hot:
+            labels_one_hot = tf.one_hot( labels,depth =2 )
+        else:
+            labels_one_hot = labels
+
+        if loss_op_kwargs is None:
+            loss = loss_op( labels, output )
+        else:
+            loss = loss_op( labels, output, **loss_op_kwargs)
+        '''
+
+        loss = contrastive_loss( out_one, out_two, labels, margin )
 
         ##calculate gradient and apply it
         grads = updater.compute_gradients( loss )
@@ -118,3 +138,4 @@ def train_step( images_one, images_two, labels, network,
 
     return out_one, out_two,loss, learning_rate, \
            global_step_number, train_op
+    #return output, loss, learning_rate, global_step_number, train_op
