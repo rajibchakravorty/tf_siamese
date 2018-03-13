@@ -94,27 +94,48 @@ def save_siamese_txt( siamese_list, outfile ):
 
 if __name__ == '__main__':
 
-    pickle_input = join( 'output','test.pickle' )
-    output_file = join( 'output', 'test_300.txt' )
-    output_siamese_file = join( 'output','train_siamese_300.txt' )
-    tfrecord_file = join( 'output','train_300.tfrecods' )
+    '''
+    per_class_samples = [20,50,100,200,300,500]
 
-    class_count, selected_list = choose_random_list( load_pickled_list( pickle_input ),
-                                                     3000, output_file)
+    for per_class_sample in per_class_samples:
+
+        pickle_input = join( 'output','train.pickle' )
+        output_file = join( 'output', 'train_raw_list_{0}.txt'.format( per_class_sample ) )
+        output_siamese_file = join( 'output','train_siamese_pair_{0}.txt'.format( per_class_sample ) )
+        tfrecord_file = join( 'output','train_siamese_pair_{0}.tfrecods'.format( per_class_sample ) )
+
+        class_count, selected_list = choose_random_list( load_pickled_list( pickle_input ),
+                                                         10*per_class_sample, output_file)
+
+        print class_count
+        print selected_list[0:1]
+
+        selected_siamese_list = random_combination( selected_list )
+
+        print selected_siamese_list[0]
+        save_siamese_txt( selected_siamese_list, output_siamese_file )
+
+        prep_tfrecord_siamese( selected_siamese_list, tfrecord_file )
+
+    '''
+
+    pickle_input = join('output', 'siamese_valid.pickle')
+    output_file = join('output', 'siamese_valid_raw_list.txt' )
+    output_siamese_file = join('output', 'siamese_pair_valid.txt' )
+    tfrecord_file = join('output', 'siamese_pair_valid.tfrecods' )
+
+    class_count, selected_list = choose_random_list(load_pickled_list(pickle_input),
+                                                    1000, output_file)
 
     print class_count
     print selected_list[0:1]
 
-    selected_siamese_list = random_combination( selected_list )
+    selected_siamese_list = random_combination(selected_list)
 
     print selected_siamese_list[0]
-    save_siamese_txt( selected_siamese_list, output_siamese_file )
+    save_siamese_txt(selected_siamese_list, output_siamese_file)
 
-    prep_tfrecord_siamese( selected_siamese_list, tfrecord_file )
-
-
-
-
+    prep_tfrecord_siamese(selected_siamese_list, tfrecord_file)
 
 '''
     class_num = 10

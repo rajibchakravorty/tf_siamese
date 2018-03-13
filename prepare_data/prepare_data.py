@@ -45,10 +45,10 @@ def count_class( image_label_list ):
 
 if __name__ == '__main__':
 
-    data_location = '/opt/ml_data/cifar/cifar-10-batches-py'
+    data_location = '/Users/rachakara/progs/few_shots_experiments/images/cifar-10-batches-py'
 
 
-    image_location = '/opt/ml_data/cifar/cifar-10/images/train'
+    image_location = '/Users/rachakara/progs/few_shots_experiments/images/train'
 
     ##batch_1
     batch_file = join( data_location, 'data_batch_1' )
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
 
 
-    image_location = '/opt/ml_data/cifar/cifar-10/images/test'
+    image_location = '/Users/rachakara/progs/few_shots_experiments/images/test'
     batch_file = join(data_location, 'test_batch')
     test_list = get_batch_data_lists(batch_file, 'test', image_location)
 
