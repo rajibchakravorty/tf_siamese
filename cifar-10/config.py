@@ -17,8 +17,8 @@ batch_per_test = 500 #3000
 
 
 learning_rate_info = dict()
-learning_rate_info['init_rate'] = 0.00005 #0.00005
-learning_rate_info['decay_steps'] = 2*1000
+learning_rate_info['init_rate'] = 0.00000005 #0.00005
+learning_rate_info['decay_steps'] = 3*500
 learning_rate_info['decay_factor'] = 0.98
 learning_rate_info['staircase']  =True
 
@@ -40,16 +40,17 @@ class_numbers = 10
 
 checkpoint_path = './checkpoints'
 model_checkpoint_path = join( checkpoint_path, 'model.ckpt')
-prior_weights = None #join( checkpoint_path, 'model.ckpt-00003500' )
+prior_weights = join( checkpoint_path, 'model.ckpt-00019000' )
 train_summary_path = join( checkpoint_path, 'train' )
 valid_summary_path = join( checkpoint_path, 'valid' )
 
 
 
-root_path = '/home/deeplearner/progs/few_shot/prepare_data/output'
+#root_path = '/home/deeplearner/progs/few_shot/prepare_data/output'
+root_path = '/Users/rachakara/progs/few_shots_experiments/few_shot/prepare_data/output'
 sample_per_class = 50 ##20,50,100,200,300
-train_tfrecords = join( root_path, 'train_{0}.tfrecords'.format( sample_per_class ) )
-valid_tfrecords = join( root_path, 'siamese_valid.tfrecords' )
+train_tfrecords = join( root_path, 'train_siamese_pair_{0}.tfrecods'.format( sample_per_class ) )
+valid_tfrecords = join( root_path, 'siamese_pair_valid.tfrecods' )
 
 ## information for parsing the tfrecord
 features={'image_one':tf.FixedLenFeature([], tf.string),\
@@ -60,3 +61,9 @@ features={'image_one':tf.FixedLenFeature([], tf.string),\
 
 train_parser = Parser( features, image_height, image_width )
 valid_parser = Parser( features, image_height, image_width )
+
+
+##test files
+test_checkpoint_path = './checkpoints'
+test_prior_weights = join( checkpoint_path, 'model.ckpt-00019000' )
+class_valid_list = join( root_path, 'class_valid.pickle' )

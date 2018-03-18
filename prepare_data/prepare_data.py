@@ -75,7 +75,8 @@ if __name__ == '__main__':
     same_valid = valid_list[0:1000]
     class_valid = valid_list[5000:]
 
-
+    print len(valid_list), len( train_list ), len( same_valid), len( class_valid)
+    '''
 
     image_location = '/Users/rachakara/progs/few_shots_experiments/images/test'
     batch_file = join(data_location, 'test_batch')
@@ -100,3 +101,4 @@ if __name__ == '__main__':
     with open(test_file, 'wb') as f:
         cPickle.dump(test_list, f)
 
+    '''
