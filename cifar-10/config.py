@@ -9,17 +9,17 @@ from data_parser import Parser
 device_string = '/device:CPU:1'
 
 ## definition of epoch in terms of batch number
-batch_per_epoch = 500 #3000
+batch_per_epoch = 2000 #3000 #40000-500
 batch_size = 32
 
 ## batches to be used during statistics collections
-batch_per_test = 500 #3000
+batch_per_test = 300 #3000
 
 
 learning_rate_info = dict()
-learning_rate_info['init_rate'] = 0.00000005 #0.00005
-learning_rate_info['decay_steps'] = 3*500
-learning_rate_info['decay_factor'] = 0.98
+learning_rate_info['init_rate'] = 0.00005 #0.00005
+learning_rate_info['decay_steps'] = 60*2000
+learning_rate_info['decay_factor'] = 0.95
 learning_rate_info['staircase']  =True
 
 ##loss operations
@@ -40,7 +40,7 @@ class_numbers = 10
 
 checkpoint_path = './checkpoints'
 model_checkpoint_path = join( checkpoint_path, 'model.ckpt')
-prior_weights = join( checkpoint_path, 'model.ckpt-00019000' )
+prior_weights = None #join( checkpoint_path, 'model.ckpt-00019000' )
 train_summary_path = join( checkpoint_path, 'train' )
 valid_summary_path = join( checkpoint_path, 'valid' )
 
@@ -48,7 +48,7 @@ valid_summary_path = join( checkpoint_path, 'valid' )
 
 #root_path = '/home/deeplearner/progs/few_shot/prepare_data/output'
 root_path = '/Users/rachakara/progs/few_shots_experiments/few_shot/prepare_data/output'
-sample_per_class = 50 ##20,50,100,200,300
+sample_per_class = 500 ##20,50,100,200,300
 train_tfrecords = join( root_path, 'train_siamese_pair_{0}.tfrecods'.format( sample_per_class ) )
 valid_tfrecords = join( root_path, 'siamese_pair_valid.tfrecods' )
 

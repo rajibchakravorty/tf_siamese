@@ -64,11 +64,11 @@ Provision for supplying loss calculators and optimizers
 
 def contrastive_loss(output_1, output_2, label, margin):
 
-    inverted_label = 1-label
+    #inverted_label = 1-label
     d = tf.reduce_sum(tf.square(output_1 - output_2), 1)
     d_sqrt = tf.sqrt(d)
 
-    label_casted = tf.cast( inverted_label, tf.float32 )
+    label_casted = tf.cast( label, tf.float32 )
     loss = label_casted * tf.square(tf.maximum(0., margin - d_sqrt)) + \
                     (1 - label_casted) * d
 
