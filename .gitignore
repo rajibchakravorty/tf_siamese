@@ -1,4 +1,5 @@
 .idea/*
 *.pyc
 prepare_data/output/*
-cifar-10/checkpoints/*
+cifar-10/checkpoints*
+cifar-10/classification*

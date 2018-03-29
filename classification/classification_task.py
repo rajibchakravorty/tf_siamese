@@ -1,6 +1,9 @@
 
-from numpy import dot, inner
+import numpy as np
+from numpy import mean, std, dot, inner
 from numpy.linalg import norm
+
+from sklearn.metrics.pairwise import cosine_similarity
 
 import random
 
@@ -8,12 +11,12 @@ from os.path import join
 
 import cPickle
 
-feature_location = '/Users/rachakara/progs/few_shots_experiments/few_shot/cifar-10/classification_50/'
+feature_location = '/home/rachakra/few_shot_learning/cifar-10/classification/'
 
 test_feature_file = join( feature_location, 'test_features.pickle' )
 train_feature_file = join( feature_location, 'train_feature.pickle' )
 
-K = 3
+K = 10
 
 random.seed( 2440)
 
@@ -45,6 +48,41 @@ def _choose_random( train_files, chosen_K ):
         chosen_files[idx] = f[0:chosen_K]
 
     return chosen_files
+
+
+def _get_distance( test_feature, train_features ):
+
+    all_distances = list()
+    for train_f in train_features:
+        dist = cosine_similarity( test_feature, train_f )
+        all_distances.append( dist )
+
+    all_distances = np.array( all_distances )
+    return all_distances
+   
+def _get_metric( all_distances ):
+
+    mean_dist = mean( all_distances )
+    var_std = std( all_distances )
+
+    t = mean_dist / var_std
+
+    return t
+
+def _get_cumul_distance_metric( test_feature, train_features, train_files ):
+
+    all_features = list()
+    for train_f in train_files:
+
+        train_feature, train_label = train_features[train_f]
+        train_feature = train_feature[0]
+        #print train_feature
+        all_features.append( train_feature )
+
+    all_distances = _get_distance( test_feature, all_features)
+    metric = _get_metric( all_distances )
+
+    return metric, train_label
 
 if __name__ == '__main__':
 
@@ -80,30 +118,25 @@ if __name__ == '__main__':
     '''
 
 
-    for test_f in test_features.keys()[1012:1013]:
+    for test_f in test_features.keys()[0:5]:
 
         test_feature, test_label = test_features[test_f]
         test_feature = test_feature[0]
 
-        all_distances = list()
+        print test_label
+
+     
         for l in range( len( chosen_train_files ) ):
 
             train_files = chosen_train_files[l]
 
-            label_distances = list()
-            for train_f in train_files:
+            metric, label = _get_cumul_distance_metric( test_feature, train_features, train_files )
 
-                train_feature, train_label = train_features[train_f]
-                train_feature = train_feature[0]
-                assert train_label == l, 'obtained label is not the same'
-                dist = inner( test_feature, train_feature ) / (norm( train_feature ) * norm(test_feature ) )
+            assert label == l, 'obtained label is not the same !!!'
 
-                label_distances.append( dist )
-
-            print label_distances
-            #print len( label_distances )
-            all_distances.append( label_distances )
+            print test_label, metric
 
 
 
         #decide_class( all_distances )
+       

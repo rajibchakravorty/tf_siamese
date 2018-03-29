@@ -31,6 +31,7 @@ class Parser():
         imf_file2 = image_string
 
         image_two = tf.image.convert_image_dtype(image_two, tf.float32)
+        image_two = tf.image.per_image_standardization( image_two )
 
         #image = tf.image.rgb_to_grayscale( image )
 

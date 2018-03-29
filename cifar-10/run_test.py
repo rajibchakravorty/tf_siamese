@@ -60,17 +60,17 @@ def _text_to_list( text_file_name ,root_data_folder ):
 
 if __name__ == '__main__':
 
-    root_data_folder = '/Users/rachakara/progs/few_shots_experiments/few_shot/prepare_data/output'
-    root_image_folder = '/Users/rachakara/progs/few_shots_experiments/images/train'
+    root_data_folder = '/home/rachakra/few_shot_learning/prepare_data/output'
+    train_image_folder = '/home/rachakra/data/ml_data/cifar/train/'
 
-    train_file = join( root_data_folder, 'train_raw_list_50.txt' )
+    train_file = join( root_data_folder, 'train_raw_list_500.txt' )
 
     file_label_list = _read_file_label( config.class_valid_list )
 
 
     tester = Tester(network, config )
 
-    train_list = _text_to_list( train_file, root_image_folder)
+    train_list = _text_to_list( train_file, train_image_folder)
 
     class_test_result = _get_files_feature( file_label_list, tester )
     train_result = _get_files_feature( train_list, tester)
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     print len( class_test_result.keys() )
     print len( train_result.keys() )
 
-    output_folder = '/Users/rachakara/progs/few_shots_experiments/few_shot/cifar-10/classification_50/'
+    output_folder = '/home/rachakra/few_shot_learning/cifar-10/classification_500'
 
     test_features_file = join( output_folder, 'test_features.pickle' )
     train_features_file = join( output_folder, 'train_feature.pickle' )

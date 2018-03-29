@@ -45,10 +45,10 @@ def count_class( image_label_list ):
 
 if __name__ == '__main__':
 
-    data_location = '/Users/rachakara/progs/few_shots_experiments/images/cifar-10-batches-py'
+    #data_location = '/Users/rachakara/progs/few_shots_experiments/images/cifar-10-batches-py'
+    data_location = '/home/rachakra/data/ml_data/cifar/cifar-10-batches-py'
 
-
-    image_location = '/Users/rachakara/progs/few_shots_experiments/images/train'
+    image_location = '/home/rachakra/data/ml_data/cifar/train'
 
     ##batch_1
     batch_file = join( data_location, 'data_batch_1' )
@@ -76,9 +76,10 @@ if __name__ == '__main__':
     class_valid = valid_list[5000:]
 
     print len(valid_list), len( train_list ), len( same_valid), len( class_valid)
-    '''
+    
 
-    image_location = '/Users/rachakara/progs/few_shots_experiments/images/test'
+    #image_location = '/Users/rachakara/progs/few_shots_experiments/images/test'
+    image_location = '/home/rachakra/data/ml_data/cifar/test'
     batch_file = join(data_location, 'test_batch')
     test_list = get_batch_data_lists(batch_file, 'test', image_location)
 
@@ -101,4 +102,4 @@ if __name__ == '__main__':
     with open(test_file, 'wb') as f:
         cPickle.dump(test_list, f)
 
-    '''
+   

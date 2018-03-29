@@ -94,7 +94,7 @@ def save_siamese_txt( siamese_list, outfile ):
 
 if __name__ == '__main__':
 
-    '''
+    
     per_class_samples = [20,50,100,200,300,500]
 
     for per_class_sample in per_class_samples:
@@ -102,7 +102,7 @@ if __name__ == '__main__':
         pickle_input = join( 'output','train.pickle' )
         output_file = join( 'output', 'train_raw_list_{0}.txt'.format( per_class_sample ) )
         output_siamese_file = join( 'output','train_siamese_pair_{0}.txt'.format( per_class_sample ) )
-        tfrecord_file = join( 'output','train_siamese_pair_{0}.tfrecods'.format( per_class_sample ) )
+        tfrecord_file = join( 'output','train_siamese_pair_{0}.tfrecords'.format( per_class_sample ) )
 
         class_count, selected_list = choose_random_list( load_pickled_list( pickle_input ),
                                                          10*per_class_sample, output_file)
@@ -117,12 +117,12 @@ if __name__ == '__main__':
 
         prep_tfrecord_siamese( selected_siamese_list, tfrecord_file )
 
-    '''
+   
 
     pickle_input = join('output', 'siamese_valid.pickle')
     output_file = join('output', 'siamese_valid_raw_list.txt' )
     output_siamese_file = join('output', 'siamese_pair_valid.txt' )
-    tfrecord_file = join('output', 'siamese_pair_valid.tfrecods' )
+    tfrecord_file = join('output', 'siamese_pair_valid.tfrecords' )
 
     class_count, selected_list = choose_random_list(load_pickled_list(pickle_input),
                                                     1000, output_file)

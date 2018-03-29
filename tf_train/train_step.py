@@ -58,7 +58,7 @@ def prep_train_summary_op( total_loss,
 
 '''
 training steps of a typical classification task
-Provision for supplying loss calculators and optimizers
+Parovision for supplying loss calculators and optimizers
 '''
 #TODO: test supplying other loss_op and optimizers
 
@@ -66,11 +66,13 @@ def contrastive_loss(output_1, output_2, label, margin):
 
     #inverted_label = 1-label
     d = tf.reduce_sum(tf.square(output_1 - output_2), 1)
-    d_sqrt = tf.sqrt(d)
+    d_sqrt = tf.sqrt(d + 1e-6)
 
     label_casted = tf.cast( label, tf.float32 )
-    loss = label_casted * tf.square(tf.maximum(0., margin - d_sqrt)) + \
-                    (1 - label_casted) * d
+
+    
+    loss = (1 - label_casted ) * tf.square( d ) + \
+           label_casted * tf.square(tf.maximum(0., margin - d_sqrt))
 
     loss = 0.5 * tf.reduce_mean(loss)
 
@@ -107,9 +109,10 @@ def train_step( images_one, images_two, labels, network,
     else:
         updater = optimizer( learning_rate=learning_rate, **optimizer_kwargs )
 
-    with tf.device( cpu_device ):
+    with tf.device( device_string ) as scope:       
         ## get logits
         out_one = network( images_one, reuse = False )
+        #scope.reuse_variables()
         out_two = network( images_two, reuse = True )
         #output = network( images_one, images_two )
 
@@ -129,8 +132,13 @@ def train_step( images_one, images_two, labels, network,
 
         loss = contrastive_loss( out_one, out_two, labels, margin )
 
+        regularization_penalty = tf.contrib.layers.apply_regularization( tf.contrib.layers.l1_l2_regularizer(scale_l1 = 0.1,\
+                                                                                                            scale_l2 = 0.1 ),\
+                                                                         tf.get_collection( tf.GraphKeys.TRAINABLE_VARIABLES)  ) 
+
+        total_loss = loss+regularization_penalty
         ##calculate gradient and apply it
-        grads = updater.compute_gradients( loss )
+        grads = updater.compute_gradients( total_loss )
 
         train_op = updater.apply_gradients( grads,
                                               global_step = global_step_number )
