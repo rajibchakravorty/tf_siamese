@@ -21,13 +21,10 @@ def _read_image( image_file ):
     image_array = img_as_float( imread( image_file ) )
     return image_array
 
-def _get_image_feature( im, tester ):
-
-    return tester.run_test( im )
 
 def _get_file_feature( image_file, tester ):
 
-    return _get_image_feature( _read_image( image_file), tester )
+    return tester.run_test( image_file )
 
 def _get_files_feature( file_list, tester ):
 
@@ -39,6 +36,7 @@ def _get_files_feature( file_list, tester ):
         label      = f[1]
 
         feature = _get_file_feature( image_file, tester )
+        print feature[0].shape
         result[image_file] = (feature, label)
 
     return result
@@ -77,16 +75,16 @@ if __name__ == '__main__':
 
     print len( class_test_result.keys() )
     print len( train_result.keys() )
-
-    output_folder = '/home/rachakra/few_shot_learning/cifar-10/classification_500'
+    
+    output_folder = '/home/rachakra/few_shot_learning/cifar-10/classification'
 
     test_features_file = join( output_folder, 'test_features.pickle' )
     train_features_file = join( output_folder, 'train_feature.pickle' )
-
+    
     with open( test_features_file,'wb' ) as f:
 
         cPickle.dump( class_test_result, f )
 
     with open(train_features_file, 'wb') as f:
         cPickle.dump( train_result, f)
-
+    

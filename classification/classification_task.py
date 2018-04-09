@@ -1,9 +1,10 @@
-
+import operator
 import numpy as np
 from numpy import mean, std, dot, inner
 from numpy.linalg import norm
 
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics import accuracy_score
 
 import random
 
@@ -16,9 +17,9 @@ feature_location = '/home/rachakra/few_shot_learning/cifar-10/classification/'
 test_feature_file = join( feature_location, 'test_features.pickle' )
 train_feature_file = join( feature_location, 'train_feature.pickle' )
 
-K = 10
+K = 3
 
-random.seed( 2440)
+#random.seed( 2440)
 
 def _read_features( feature_file ):
 
@@ -54,7 +55,8 @@ def _get_distance( test_feature, train_features ):
 
     all_distances = list()
     for train_f in train_features:
-        dist = cosine_similarity( test_feature, train_f )
+        dist = np.sum( np.power( test_feature-train_f, 2.0 ) ) #cosine_similarity( test_feature, train_f )
+        #dist = np.abs( cosine_similarity( test_feature, train_f ) )
         all_distances.append( dist )
 
     all_distances = np.array( all_distances )
@@ -80,9 +82,25 @@ def _get_cumul_distance_metric( test_feature, train_features, train_files ):
         all_features.append( train_feature )
 
     all_distances = _get_distance( test_feature, all_features)
-    metric = _get_metric( all_distances )
+  
+    #print np.max( all_distances) , np.min( all_distances ) 
 
-    return metric, train_label
+    return all_distances, train_label
+
+def _get_index( input_list ):
+
+    
+    min_index, _ = min( enumerate( input_list ), key = operator.itemgetter( 1 ) )
+    max_index, _ = max( enumerate( input_list ), key = operator.itemgetter( 1 ) )
+    
+    return min_index, max_index
+
+def _get_sorted_index( input_list ):
+
+    input_list_copy = input_list[:]
+    return sorted( range( len(input_list_copy)), key=lambda k:input_list_copy[k])
+    
+
 
 if __name__ == '__main__':
 
@@ -117,26 +135,44 @@ if __name__ == '__main__':
 
     '''
 
-
-    for test_f in test_features.keys()[0:5]:
+    test_truth = []
+    test_label_max = []
+    test_label_min = []
+    for test_f in test_features.keys():
 
         test_feature, test_label = test_features[test_f]
         test_feature = test_feature[0]
 
         print test_label
 
-     
+        
         for l in range( len( chosen_train_files ) ):
 
             train_files = chosen_train_files[l]
 
-            metric, label = _get_cumul_distance_metric( test_feature, train_features, train_files )
+            all_distances, label = _get_cumul_distance_metric( test_feature, train_features, train_files )
 
             assert label == l, 'obtained label is not the same !!!'
 
-            print test_label, metric
+            #print test_label, metric
+            #min_index, max_index = _get_index( all_distances )
+            sorted_index = _get_sorted_index( all_distances )
+
+            
+
+            test_truth.append( test_label )
+            #test_label_max.append( max_index )
+            #test_label_min.append( min_index )
+            if test_label in sorted_index[0:3]:
+                test_label_max.append( test_label)
+            else:
+                test_label_max.append( sorted_index[0])
 
 
 
-        #decide_class( all_distances )
+    
+    #print test_truth
+    print 'Max accuracy: {0}'.format( accuracy_score( test_truth, test_label_max ) )
+    #print 'Min accuracy: {0}'.format( accuracy_score( test_truth, test_label_min ) )
+
        

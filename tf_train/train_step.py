@@ -71,7 +71,7 @@ def contrastive_loss(output_1, output_2, label, margin):
     label_casted = tf.cast( label, tf.float32 )
 
     
-    loss = (1 - label_casted ) * tf.square( d ) + \
+    loss = (1 - label_casted ) * tf.square( d_sqrt ) + \
            label_casted * tf.square(tf.maximum(0., margin - d_sqrt))
 
     loss = 0.5 * tf.reduce_mean(loss)
@@ -132,9 +132,10 @@ def train_step( images_one, images_two, labels, network,
 
         loss = contrastive_loss( out_one, out_two, labels, margin )
 
-        regularization_penalty = tf.contrib.layers.apply_regularization( tf.contrib.layers.l1_l2_regularizer(scale_l1 = 0.1,\
-                                                                                                            scale_l2 = 0.1 ),\
-                                                                         tf.get_collection( tf.GraphKeys.TRAINABLE_VARIABLES)  ) 
+        #regularization_penalty = tf.contrib.layers.apply_regularization( tf.contrib.layers.l1_l2_regularizer(scale_l1 = 0.1,\
+        #                                                                                                    scale_l2 = 0.1 ),\
+        #                                                                 tf.get_collection( tf.GraphKeys.TRAINABLE_VARIABLES)  ) 
+        regularization_penalty = tf.add_n( tf.get_collection( tf.GraphKeys.REGULARIZATION_LOSSES) )
 
         total_loss = loss+regularization_penalty
         ##calculate gradient and apply it

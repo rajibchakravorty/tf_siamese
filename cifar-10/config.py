@@ -17,7 +17,7 @@ batch_per_test = 300 #3000
 
 
 learning_rate_info = dict()
-learning_rate_info['init_rate'] = 0.0005 #0.00005
+learning_rate_info['init_rate'] = 0.00005 #0.00005
 learning_rate_info['decay_steps'] = 60*2000
 learning_rate_info['decay_factor'] = 0.95
 learning_rate_info['staircase']  =True
@@ -26,7 +26,7 @@ learning_rate_info['staircase']  =True
 loss_op=tf.losses.sparse_softmax_cross_entropy
 one_hot=False
 loss_op_kwargs = None
-contrastive_margin = 0.5
+contrastive_margin = 1.0
 
 ##optimizers
 optimizer = tf.train.AdamOptimizer
@@ -40,7 +40,7 @@ class_numbers = 10
 
 checkpoint_path = './checkpoints'
 model_checkpoint_path = join( checkpoint_path, 'model.ckpt')
-prior_weights = None #join( checkpoint_path, 'model.ckpt-00060000' )
+prior_weights = join( checkpoint_path, 'model.ckpt-00128000' )
 train_summary_path = join( checkpoint_path, 'train' )
 valid_summary_path = join( checkpoint_path, 'valid' )
 
@@ -60,11 +60,11 @@ features={'image_one':tf.FixedLenFeature([], tf.string),
 
 
 
-train_parser = Parser( features, image_height, image_width )
-valid_parser = Parser( features, image_height, image_width )
+train_parser = Parser( features, image_height, image_width, True )
+valid_parser = Parser( features, image_height, image_width, False )
 
 
 ##test files
 test_checkpoint_path = './checkpoints'
-test_prior_weights = join( checkpoint_path, 'model.ckpt-00140000' )
+test_prior_weights = join( checkpoint_path, 'model.ckpt-0064000' )
 class_valid_list = join( root_path, 'class_valid.pickle' )
