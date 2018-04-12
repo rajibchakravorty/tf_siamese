@@ -95,7 +95,7 @@ def save_siamese_txt( siamese_list, outfile ):
 if __name__ == '__main__':
 
     
-    per_class_samples = [20,50,100,200,300,500]
+    per_class_samples = [100,200,300,500,1000,2000]
 
     for per_class_sample in per_class_samples:
 
@@ -137,34 +137,3 @@ if __name__ == '__main__':
 
     prep_tfrecord_siamese(selected_siamese_list, tfrecord_file)
 
-'''
-    class_num = 10
-
-    print 'Training/Valid 1/Valid 2/Test {0}/{1}/{2}/{3}'.format( len( train_list ),\
-                                                                 len( same_valid ),\
-                                                                 len( class_valid ),\
-                                                                  len( test_list ))
-
-    count_class(same_valid)
-    count_class(class_valid)
-    count_class(test_list)
-
-    ##saving tf_records
-
-    same_valid_file = 'same_valid.tfrecords'
-    class_valid_file = 'class_valid.tfrecords'
-    test_file = 'test.tfrecords'
-
-    prep_tfrecord_siamese( same_valid, same_valid_file )
-    prep_tfrecord_class( class_valid, class_valid_file )
-    prep_tfrecord_class( test_list, test_file )
-
-
-    for sample_per_class in [20,50,100,150,200,250,300,350,500]:
-        total_samples = sample_per_class * class_num
-
-        train_list_sampled = train_list[0:total_samples]
-        count_class(train_list_sampled)
-        train_file = 'train_{0}.tfrecords'.format(sample_per_class)
-        prep_tfrecord_siamese(train_list_sampled, train_file)
-'''

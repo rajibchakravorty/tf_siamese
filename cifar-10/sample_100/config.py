@@ -3,13 +3,24 @@ from os.path import join
 
 import tensorflow as tf
 
+from cnn import cnn_archi as network
 
 from data_parser import Parser
+
+sample_per_class = 100
+
+sample_path = join( '/home/rachakra/few_shot_learning/cifar-10',\
+                    'sample_{0}'.format( sample_per_class ) )
+
+checkpoint_path = join( sample_path, 'checkpoints' )
+classification_path = join( sample_path, 'classification' )
+
+test_prior_weights = join( checkpoint_path, 'model.ckpt-0064000' )
 
 device_string = '/device:GPU:0'
 
 ## definition of epoch in terms of batch number
-batch_per_epoch = 2000 #3000 #40000-500
+batch_per_epoch = 3000 #40000-500
 batch_size = 32
 
 ## batches to be used during statistics collections
@@ -17,8 +28,8 @@ batch_per_test = 300 #3000
 
 
 learning_rate_info = dict()
-learning_rate_info['init_rate'] = 0.00005 #0.00005
-learning_rate_info['decay_steps'] = 60*2000
+learning_rate_info['init_rate'] = 0.000005 #0.00005
+learning_rate_info['decay_steps'] = 1 * batch_per_epoch
 learning_rate_info['decay_factor'] = 0.95
 learning_rate_info['staircase']  =True
 
@@ -38,18 +49,16 @@ image_channel  = 3
 
 class_numbers = 10
 
-checkpoint_path = './checkpoints'
+#model storage
+
 model_checkpoint_path = join( checkpoint_path, 'model.ckpt')
-prior_weights = join( checkpoint_path, 'model.ckpt-00128000' )
+prior_weights = None #join( checkpoint_path, 'model.ckpt-00128000' )
 train_summary_path = join( checkpoint_path, 'train' )
 valid_summary_path = join( checkpoint_path, 'valid' )
 
 
-
-#root_path = '/home/deeplearner/progs/few_shot/prepare_data/output'
-#root_path = '/Users/rachakara/progs/few_shots_experiments/few_shot/prepare_data/output'
+## data loading
 root_path = '/home/rachakra/few_shot_learning/prepare_data/output'
-sample_per_class = 500 ##20,50,100,200,300
 train_tfrecords = join( root_path, 'train_siamese_pair_{0}.tfrecords'.format( sample_per_class ) )
 valid_tfrecords = join( root_path, 'siamese_pair_valid.tfrecords' )
 
@@ -58,13 +67,10 @@ features={'image_one':tf.FixedLenFeature([], tf.string),
     'image_two':tf.FixedLenFeature([], tf.string),\
     'label': tf.FixedLenFeature([], tf.int64 )}
 
-
-
 train_parser = Parser( features, image_height, image_width, True )
 valid_parser = Parser( features, image_height, image_width, False )
 
 
 ##test files
-test_checkpoint_path = './checkpoints'
-test_prior_weights = join( checkpoint_path, 'model.ckpt-0064000' )
+training_list_file = 'training_raw_list_{0}.txt'.format( sample_per_class )
 class_valid_list = join( root_path, 'class_valid.pickle' )

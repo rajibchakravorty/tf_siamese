@@ -6,10 +6,9 @@ from skimage import img_as_float
 
 import cPickle
 
-import config as config
+import sample_100.onfig as config
 
 from tf_test.tester import Tester
-from cnn_2 import cnn_archi as network
 
 
 def _read_file_label( list_pickle_file):
@@ -61,7 +60,7 @@ if __name__ == '__main__':
     root_data_folder = '/home/rachakra/few_shot_learning/prepare_data/output'
     train_image_folder = '/home/rachakra/data/ml_data/cifar/train/'
 
-    train_file = join( root_data_folder, 'train_raw_list_500.txt' )
+    train_file = join( root_data_folder, config.training_list_file )
 
     file_label_list = _read_file_label( config.class_valid_list )
 
@@ -76,7 +75,7 @@ if __name__ == '__main__':
     print len( class_test_result.keys() )
     print len( train_result.keys() )
     
-    output_folder = '/home/rachakra/few_shot_learning/cifar-10/classification'
+    output_folder = config.classification_path
 
     test_features_file = join( output_folder, 'test_features.pickle' )
     train_features_file = join( output_folder, 'train_feature.pickle' )
