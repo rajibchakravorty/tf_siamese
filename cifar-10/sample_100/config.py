@@ -1,4 +1,7 @@
 
+import os
+os.environ['CUDA_VISIBLE_DEVICES']='0'
+
 from os.path import join
 
 import tensorflow as tf
@@ -13,11 +16,12 @@ sample_path = join( '/home/rachakra/few_shot_learning/cifar-10',\
                     'sample_{0}'.format( sample_per_class ) )
 
 checkpoint_path = join( sample_path, 'checkpoints' )
+prior_weights = None #join( checkpoint_path, 'model.ckpt-00036000' )
 classification_path = join( sample_path, 'classification' )
 
-test_prior_weights = join( checkpoint_path, 'model.ckpt-0064000' )
+test_prior_weights = join( checkpoint_path, 'model.ckpt-00240000' )
 
-device_string = '/device:GPU:0'
+device_string = '/gpu:0'
 
 ## definition of epoch in terms of batch number
 batch_per_epoch = 3000 #40000-500
@@ -28,8 +32,8 @@ batch_per_test = 300 #3000
 
 
 learning_rate_info = dict()
-learning_rate_info['init_rate'] = 0.000005 #0.00005
-learning_rate_info['decay_steps'] = 1 * batch_per_epoch
+learning_rate_info['init_rate'] = 0.0005 #0.00005
+learning_rate_info['decay_steps'] = 2 * batch_per_epoch
 learning_rate_info['decay_factor'] = 0.95
 learning_rate_info['staircase']  =True
 
@@ -37,7 +41,7 @@ learning_rate_info['staircase']  =True
 loss_op=tf.losses.sparse_softmax_cross_entropy
 one_hot=False
 loss_op_kwargs = None
-contrastive_margin = 1.0
+contrastive_margin = 0.5
 
 ##optimizers
 optimizer = tf.train.AdamOptimizer
@@ -52,7 +56,6 @@ class_numbers = 10
 #model storage
 
 model_checkpoint_path = join( checkpoint_path, 'model.ckpt')
-prior_weights = None #join( checkpoint_path, 'model.ckpt-00128000' )
 train_summary_path = join( checkpoint_path, 'train' )
 valid_summary_path = join( checkpoint_path, 'valid' )
 
@@ -72,5 +75,5 @@ valid_parser = Parser( features, image_height, image_width, False )
 
 
 ##test files
-training_list_file = 'training_raw_list_{0}.txt'.format( sample_per_class )
+training_list_file = 'train_raw_list_{0}.txt'.format( sample_per_class )
 class_valid_list = join( root_path, 'class_valid.pickle' )

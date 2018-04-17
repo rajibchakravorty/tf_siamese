@@ -12,12 +12,15 @@ from os.path import join
 
 import cPickle
 
-feature_location = '/home/rachakra/few_shot_learning/cifar-10/classification/'
+sample_per_class = 100
+
+feature_location = join( '/home/rachakra/few_shot_learning/cifar-10',\
+                         'sample_{0}'.format( sample_per_class ),\
+                         'classification' )
 
 test_feature_file = join( feature_location, 'test_features.pickle' )
 train_feature_file = join( feature_location, 'train_feature.pickle' )
 
-K = 3
 
 #random.seed( 2440)
 
@@ -77,8 +80,10 @@ def _get_cumul_distance_metric( test_feature, train_features, train_files ):
     for train_f in train_files:
 
         train_feature, train_label = train_features[train_f]
-        train_feature = train_feature[0]
+        train_feature = train_feature[0][0]
+        train_feature = np.reshape( train_feature, (1,-1 ) )
         #print train_feature
+        #print train_feature.shape
         all_features.append( train_feature )
 
     all_distances = _get_distance( test_feature, all_features)
@@ -108,44 +113,27 @@ if __name__ == '__main__':
     train_features = _read_features( train_feature_file )
 
     test_files = _divide_by_labels(test_features)
-    '''
-    print len(test_files)
-
-    for l in test_files:
-        print 'Class {0}'.format( len( l ) )
-        print l[0]
-    '''
     train_files = _divide_by_labels(train_features)
 
-    '''
-    print len(train_files)
+    print len( test_features.keys() )
+    print len( train_features.keys() )
 
-    for l in train_files:
-        print 'Class {0}'.format( len( l ) )
-    '''
+
+    K = 3  
 
     chosen_train_files = _choose_random( train_files, K )
-    '''
-    print len( chosen_train_files )
-
-    for c in chosen_train_files:
-
-        print len( c )
-        print c[0]
-
-    '''
 
     test_truth = []
-    test_label_max = []
-    test_label_min = []
-    for test_f in test_features.keys():
+    algo_label = []
+    for idx, test_f in enumerate( test_features.keys()[0:200] ):
 
+        print idx
         test_feature, test_label = test_features[test_f]
-        test_feature = test_feature[0]
+        test_feature = test_feature[0][0]
+        test_feature = np.reshape( test_feature, (-1,1) )
+        #print test_feature.shape
 
-        print test_label
-
-        
+        chosen_distance = []
         for l in range( len( chosen_train_files ) ):
 
             train_files = chosen_train_files[l]
@@ -156,23 +144,24 @@ if __name__ == '__main__':
 
             #print test_label, metric
             #min_index, max_index = _get_index( all_distances )
-            sorted_index = _get_sorted_index( all_distances )
+
+            chosen_distance.append( np.min( all_distances ) )
+
+        sorted_index = _get_sorted_index( chosen_distance )
 
             
 
-            test_truth.append( test_label )
-            #test_label_max.append( max_index )
-            #test_label_min.append( min_index )
-            if test_label in sorted_index[0:3]:
-                test_label_max.append( test_label)
-            else:
-                test_label_max.append( sorted_index[0])
+        test_truth.append( test_label )
+        if test_label in sorted_index[0:3]:
+            algo_label.append( test_label)
+        else:
+            algo_label.append( sorted_index[0])
 
 
 
     
     #print test_truth
-    print 'Max accuracy: {0}'.format( accuracy_score( test_truth, test_label_max ) )
+    print 'Accuracy: {0}'.format( accuracy_score( test_truth, algo_label ) )
     #print 'Min accuracy: {0}'.format( accuracy_score( test_truth, test_label_min ) )
 
-       
+      

@@ -11,7 +11,7 @@ def test_step( images_one, network) :
 
     tf.expand_dims( images_one, 0 )
 
-    output = network( images_one )
+    output = network( images_one, reuse=False )
         #output = network( images_one, images_two )
 
 

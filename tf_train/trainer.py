@@ -2,7 +2,6 @@
 implements the training and validation loops
 '''
 
-
 import numpy as np
 
 import tensorflow as tf
@@ -84,12 +83,15 @@ class Trainer():
             label_placeholder = tf.placeholder(tf.int64,
                                                shape=(None, ))
 
+            dropout_placeholder = tf.placeholder( tf.float32, shape =  () )
+
             output_one, output_two, loss, learning_rate, \
             global_steps, train_op = \
                 train_step(images_one = image_placeholder_one,
                            images_two=image_placeholder_two,
                            labels = label_placeholder,
                            network = self.network,
+                           dropout_prob = dropout_placeholder,
                            learning_rate_info=self.config.learning_rate_info,
                            device_string=self.config.device_string,
                            loss_op = self.config.loss_op,
@@ -152,7 +154,8 @@ class Trainer():
                     _,out_1,out_2,loss_output = sess.run( [train_op,output_one, output_two,loss],
                                                      feed_dict={image_placeholder_one:images_one,
                                                                 image_placeholder_two: images_two,
-                                                                label_placeholder:labels} )
+                                                                label_placeholder:labels,
+                                                                dropout_placeholder:0.5} )
 
                     if np.isnan( loss_output ):
                         print files_one, files_two
@@ -174,7 +177,8 @@ class Trainer():
                     loss_output= sess.run(loss, \
                                           feed_dict={image_placeholder_one: images_one,
                                                      image_placeholder_two: images_two,
-                                                     label_placeholder: labels})
+                                                     label_placeholder: labels,
+                                                     dropout_placeholder:1.0})
 
                     if np.isnan( loss_output ):
                         print files_one, files_two
@@ -204,7 +208,8 @@ class Trainer():
                     loss_output = sess.run(loss, \
                                            feed_dict={image_placeholder_one: images_one,
                                                       image_placeholder_two: images_two,
-                                                      label_placeholder: labels})
+                                                      label_placeholder: labels,
+                                                      dropout_placeholder:1.0})
                     if np.isnan( loss_output ):
                         print files_one, files_two
                         print 'Loss: {0}'.format(loss_output)

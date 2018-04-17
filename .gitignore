@@ -1,5 +1,6 @@
 .idea/*
 *.pyc
 prepare_data/output/*
-cifar-10/sample_100/checkpoints/*
+cifar-10/sample_100/*
+cifar-10/sample_500/*
 *.swp

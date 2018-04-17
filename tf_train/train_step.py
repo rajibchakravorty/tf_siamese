@@ -78,7 +78,7 @@ def contrastive_loss(output_1, output_2, label, margin):
 
     return loss
 
-def train_step( images_one, images_two, labels, network,
+def train_step( images_one, images_two, labels, network,dropout_prob,
                 learning_rate_info, device_string,
                 loss_op,
                 one_hot,
@@ -111,9 +111,9 @@ def train_step( images_one, images_two, labels, network,
 
     with tf.device( device_string ) as scope:       
         ## get logits
-        out_one = network( images_one, reuse = False )
+        out_one = network( images_one, dropout_prob, reuse = False )
         #scope.reuse_variables()
-        out_two = network( images_two, reuse = True )
+        out_two = network( images_two, dropout_prob, reuse = True )
         #output = network( images_one, images_two )
 
     with tf.device( cpu_device ):
@@ -129,8 +129,9 @@ def train_step( images_one, images_two, labels, network,
         else:
             loss = loss_op( labels, output, **loss_op_kwargs)
         '''
-
-        loss = contrastive_loss( out_one, out_two, labels, margin )
+        out_one_norm = tf.divide( out_one, tf.norm( out_one, ord = 2, axis = 1, keep_dims = True ) )
+        out_two_norm = tf.divide( out_two, tf.norm( out_two, ord = 2, axis = 1, keep_dims = True ) )
+        loss = contrastive_loss( out_one_norm, out_two_norm, labels, margin )
 
         #regularization_penalty = tf.contrib.layers.apply_regularization( tf.contrib.layers.l1_l2_regularizer(scale_l1 = 0.1,\
         #                                                                                                    scale_l2 = 0.1 ),\

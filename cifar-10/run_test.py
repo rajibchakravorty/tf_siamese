@@ -6,7 +6,7 @@ from skimage import img_as_float
 
 import cPickle
 
-import sample_100.onfig as config
+import sample_100.config as config
 
 from tf_test.tester import Tester
 
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     file_label_list = _read_file_label( config.class_valid_list )
 
 
-    tester = Tester(network, config )
+    tester = Tester( config.network, config )
 
     train_list = _text_to_list( train_file, train_image_folder)
 
@@ -86,4 +86,4 @@ if __name__ == '__main__':
 
     with open(train_features_file, 'wb') as f:
         cPickle.dump( train_result, f)
-    
+   

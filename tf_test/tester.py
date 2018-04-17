@@ -58,6 +58,8 @@ class Tester():
 
           
             output = self.network( image_input )
+
+            output_norm = tf.divide( output, tf.norm( output, ord=2, axis = 1, keep_dims = True ) )
             sess.run(tf.global_variables_initializer())
 
             ### savers
@@ -67,7 +69,7 @@ class Tester():
                 saver.restore(sess, self.model_file)
 
 
-        return output, sess, image_file, image_input
+        return output_norm, sess, image_file, image_input
 
 
 
