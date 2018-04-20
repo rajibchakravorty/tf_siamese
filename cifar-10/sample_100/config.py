@@ -1,6 +1,6 @@
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES']='0'
+os.environ['CUDA_VISIBLE_DEVICES']='2'
 
 from os.path import join
 
@@ -41,7 +41,7 @@ learning_rate_info['staircase']  =True
 loss_op=tf.losses.sparse_softmax_cross_entropy
 one_hot=False
 loss_op_kwargs = None
-contrastive_margin = 0.5
+contrastive_margin = 2.0
 
 ##optimizers
 optimizer = tf.train.AdamOptimizer

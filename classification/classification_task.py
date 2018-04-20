@@ -12,7 +12,7 @@ from os.path import join
 
 import cPickle
 
-sample_per_class = 100
+sample_per_class = 1000
 
 feature_location = join( '/home/rachakra/few_shot_learning/cifar-10',\
                          'sample_{0}'.format( sample_per_class ),\
@@ -119,7 +119,7 @@ if __name__ == '__main__':
     print len( train_features.keys() )
 
 
-    K = 3  
+    K = 10
 
     chosen_train_files = _choose_random( train_files, K )
 
@@ -145,7 +145,7 @@ if __name__ == '__main__':
             #print test_label, metric
             #min_index, max_index = _get_index( all_distances )
 
-            chosen_distance.append( np.min( all_distances ) )
+            chosen_distance.append( np.mean( all_distances ) )
 
         sorted_index = _get_sorted_index( chosen_distance )
 

@@ -6,7 +6,7 @@ from skimage import img_as_float
 
 import cPickle
 
-import sample_100.config as config
+import sample_1000.config as config
 
 from tf_test.tester import Tester
 

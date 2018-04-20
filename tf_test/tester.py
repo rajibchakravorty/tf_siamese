@@ -36,7 +36,10 @@ class Tester():
         with g.as_default():
 
             sess = tf.Session(graph=g, config = self.gpu_config)
+
+            dropout_prob = tf.Variable( 1.0 )
             image_file = tf.placeholder( tf.string )
+
 
             image_string = tf.read_file(image_file)
             
@@ -57,9 +60,9 @@ class Tester():
             #output = test_step( image_input, self.network )
 
           
-            output = self.network( image_input )
+            output = self.network( image_input, dropout_prob )
 
-            output_norm = tf.divide( output, tf.norm( output, ord=2, axis = 1, keep_dims = True ) )
+            #output_norm = tf.divide( output, tf.norm( output, ord=2, axis = 1, keep_dims = True ) )
             sess.run(tf.global_variables_initializer())
 
             ### savers
@@ -69,7 +72,7 @@ class Tester():
                 saver.restore(sess, self.model_file)
 
 
-        return output_norm, sess, image_file, image_input
+        return output, sess, image_file, image_input
 
 
 

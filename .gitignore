@@ -3,4 +3,5 @@
 prepare_data/output/*
 cifar-10/sample_100/*
 cifar-10/sample_500/*
+cifar-10/sample_1000/*
 *.swp
