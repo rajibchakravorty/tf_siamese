@@ -14,6 +14,9 @@ import cPickle
 
 sample_per_class = 1000
 
+Ks= [5,20,100,200,500]
+Ts = [1,3]
+
 feature_location = join( '/home/rachakra/few_shot_learning/cifar-10',\
                          'sample_{0}'.format( sample_per_class ),\
                          'classification' )
@@ -119,49 +122,53 @@ if __name__ == '__main__':
     print len( train_features.keys() )
 
 
-    K = 10
+    for i in range(5):
 
-    chosen_train_files = _choose_random( train_files, K )
+        for K in Ks:
 
-    test_truth = []
-    algo_label = []
-    for idx, test_f in enumerate( test_features.keys()[0:200] ):
+            for t in Ts:
 
-        print idx
-        test_feature, test_label = test_features[test_f]
-        test_feature = test_feature[0][0]
-        test_feature = np.reshape( test_feature, (-1,1) )
-        #print test_feature.shape
+                chosen_train_files = _choose_random( train_files, K )
 
-        chosen_distance = []
-        for l in range( len( chosen_train_files ) ):
+                test_truth = []
+                algo_label = []
+                for idx, test_f in enumerate( test_features.keys()[0:200] ):
 
-            train_files = chosen_train_files[l]
+                    #print idx
+                    test_feature, test_label = test_features[test_f]
+                    test_feature = test_feature[0][0]
+                    test_feature = np.reshape( test_feature, (-1,1) )
+                    #print test_feature.shape
 
-            all_distances, label = _get_cumul_distance_metric( test_feature, train_features, train_files )
+                    chosen_distance = []
+                    for l in range( len( chosen_train_files ) ):
 
-            assert label == l, 'obtained label is not the same !!!'
+                        label_train_files = chosen_train_files[l]
 
-            #print test_label, metric
-            #min_index, max_index = _get_index( all_distances )
+                        all_distances, label = _get_cumul_distance_metric( test_feature, 
+                                                                           train_features, 
+                                                                           label_train_files )
 
-            chosen_distance.append( np.mean( all_distances ) )
+                        assert label == l, 'obtained label is not the same !!!'
+  
+                        #print test_label, metric
+                        #min_index, max_index = _get_index( all_distances )
+                        chosen_distance.append( np.mean( all_distances ) )
 
-        sorted_index = _get_sorted_index( chosen_distance )
+                    sorted_index = _get_sorted_index( chosen_distance )
 
             
 
-        test_truth.append( test_label )
-        if test_label in sorted_index[0:3]:
-            algo_label.append( test_label)
-        else:
-            algo_label.append( sorted_index[0])
+                    test_truth.append( test_label )
 
+                    if test_label in sorted_index[0:t]:
+                        algo_label.append( test_label)
+                    else:
+                        algo_label.append( sorted_index[0])
 
-
-    
-    #print test_truth
-    print 'Accuracy: {0}'.format( accuracy_score( test_truth, algo_label ) )
-    #print 'Min accuracy: {0}'.format( accuracy_score( test_truth, test_label_min ) )
+  
+                #print test_truth
+                print '{0},{1},{2},{3},{4}'.format( sample_per_class, K, t, i, accuracy_score( test_truth, algo_label  ) )
+                #print 'Min accuracy: {0}'.format( accuracy_score( test_truth, test_label_min ) )
 
       

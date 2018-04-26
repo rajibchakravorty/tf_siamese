@@ -6,7 +6,7 @@ implements the training and validation loops
 
 import tensorflow as tf
 
-from tf_test.test_step import test_step
+#from tf_test.test_step import test_step
 
 
 class Tester():

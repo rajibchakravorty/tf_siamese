@@ -132,7 +132,7 @@ def train_step( images_one, images_two, labels, network,dropout_prob,
         #out_one_norm = tf.divide( out_one, tf.norm( out_one, ord = 2, axis = 1, keep_dims = True ) )
         #out_two_norm = tf.divide( out_two, tf.norm( out_two, ord = 2, axis = 1, keep_dims = True ) )
         loss = contrastive_loss( out_one, out_two, labels, margin )
-
+        
         #regularization_penalty = tf.contrib.layers.apply_regularization( tf.contrib.layers.l1_l2_regularizer(scale_l1 = 0.1,\
         #                                                                                                    scale_l2 = 0.1 ),\
         #                                                                 tf.get_collection( tf.GraphKeys.TRAINABLE_VARIABLES)  ) 
