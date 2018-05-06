@@ -84,6 +84,7 @@ def _get_cumul_distance_metric( test_feature, train_features, train_files ):
 
         train_feature, train_label = train_features[train_f]
         train_feature = train_feature[0][0]
+        print train_feature.shape
         train_feature = np.reshape( train_feature, (1,-1 ) )
         #print train_feature
         #print train_feature.shape

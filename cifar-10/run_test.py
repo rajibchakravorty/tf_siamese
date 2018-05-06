@@ -5,10 +5,10 @@ from skimage.io import imread
 from skimage import img_as_float
 
 import cPickle
+from tf_test.tester import Tester
 
 import sample_1000.config as config
 
-from tf_test.tester import Tester
 
 
 def _read_file_label( list_pickle_file):
