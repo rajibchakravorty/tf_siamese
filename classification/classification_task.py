@@ -14,7 +14,7 @@ import cPickle
 
 sample_per_class = 1000
 
-Ks= [5,20,100,200,500]
+Ks= [5] #,20,100,200,500]
 Ts = [1,3]
 
 feature_location = join( '/home/rachakra/few_shot_learning/cifar-10',\
@@ -84,7 +84,7 @@ def _get_cumul_distance_metric( test_feature, train_features, train_files ):
 
         train_feature, train_label = train_features[train_f]
         train_feature = train_feature[0][0]
-        print train_feature.shape
+        #print train_feature.shape
         train_feature = np.reshape( train_feature, (1,-1 ) )
         #print train_feature
         #print train_feature.shape
@@ -119,11 +119,11 @@ if __name__ == '__main__':
     test_files = _divide_by_labels(test_features)
     train_files = _divide_by_labels(train_features)
 
-    print len( test_features.keys() )
-    print len( train_features.keys() )
+    #print len( test_features.keys() )
+    #print len( train_features.keys() )
 
 
-    for i in range(5):
+    for i in range(1):
 
         for K in Ks:
 

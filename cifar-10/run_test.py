@@ -7,7 +7,7 @@ from skimage import img_as_float
 import cPickle
 from tf_test.tester import Tester
 
-import sample_1000.config as config
+import sample_1000.config_lewis as config
 
 
 
