@@ -1,8 +1,11 @@
 .idea/*
 *.pyc
 prepare_data/output/*
-cifar-10/sample_100/*
-cifar-10/sample_500/*
-cifar-10/sample_1000/*
+cifar-10/sample_100/checkpoints_*
+cifar-10/sample_500/checkpoints_*
+cifar-10/sample_1000/checkpoints_*
+cifar-10/sample_100/classification/*
+cifar-10/sample_500/classification/*
+cifar-10/sample_1000/classification/*
 *.swp
 
