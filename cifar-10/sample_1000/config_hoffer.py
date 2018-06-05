@@ -16,10 +16,10 @@ sample_path = join( '/home/rachakra/few_shot_learning/cifar-10',\
                     'sample_{0}'.format( sample_per_class ) )
 
 checkpoint_path = join( sample_path, 'checkpoints_hoffer' )
-prior_weights = None #join( checkpoint_path, 'model.ckpt-00006000' )
+prior_weights = join( checkpoint_path, 'model.ckpt-00288000' )
 classification_path = join( sample_path, 'classification' )
 
-test_prior_weights = join( checkpoint_path, 'model.ckpt-00354000' )
+test_prior_weights = join( checkpoint_path, 'model.ckpt-00495000' )
 #test_prior_weights = join( checkpoint_path, 'model.ckpt-00021000' )
 
 device_string = '/gpu:0'
@@ -33,7 +33,7 @@ batch_per_test = 3000 #3000
 
 
 learning_rate_info = dict()
-learning_rate_info['init_rate'] = 0.00005 #0.00005
+learning_rate_info['init_rate'] = 0.0000005 #0.00005
 learning_rate_info['decay_steps'] = 200 * batch_per_epoch
 learning_rate_info['decay_factor'] = 0.95
 learning_rate_info['staircase']  =True
@@ -42,10 +42,10 @@ learning_rate_info['staircase']  =True
 loss_op=tf.losses.sparse_softmax_cross_entropy
 one_hot=False
 loss_op_kwargs = None
-contrastive_margin = 2.0
+contrastive_margin = 0.5
 
 ##optimizers
-optimizer = tf.train.RMSPropOptimizer
+optimizer = tf.train.GradientDescentOptimizer #RMSPropOptimizer
 optimizer_kwargs = None
 
 image_height = 32

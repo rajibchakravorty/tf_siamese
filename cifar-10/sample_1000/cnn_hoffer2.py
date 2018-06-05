@@ -49,7 +49,7 @@ def cnn_archi(input_one, dropout_prob, reuse=tf.AUTO_REUSE):
                                        scope=scope, reuse=reuse)
         #net = tf.contrib.layers.max_pool2d(net, [3,3],stride=[2,2],padding='SAME')
         #net = tf.contrib.layers.dropout( net, keep_prob = dropout_prob, scope=scope )
-    net = tf.contrib.layers.batch_norm( net )
+    #net = tf.contrib.layers.batch_norm( net )
    
       
     with tf.variable_scope("conv5") as scope:

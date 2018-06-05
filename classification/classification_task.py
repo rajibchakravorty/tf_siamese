@@ -14,7 +14,7 @@ import cPickle
 
 sample_per_class = 1000
 
-Ks= [5] #,20,100,200,500]
+Ks= [5,20] #,20,100,200,500]
 Ts = [1,3]
 
 feature_location = join( '/home/rachakra/few_shot_learning/cifar-10',\
